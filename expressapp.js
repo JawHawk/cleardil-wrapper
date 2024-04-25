@@ -46,17 +46,66 @@ app.post("/createcustomer", async (req, res) => {
     let newCustomer = await clearDilClient.createCustomer(customerData);
     res.status(200).json(newCustomer);
   } catch (error) {
-    console.error("Error generating access token:", error.message);
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
-app.get("/customer/:customerId", async (req, res) => {
+app.get("/customers/:customerId", async (req, res) => {
   try {
     let customerData = await clearDilClient.getCustomer(req.params.customerId);
     res.status(200).json(customerData);
   } catch (error) {
-    console.error("Error generating access token:", error.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.get("/customers", async (req, res) => {
+  try {
+    let customers = await clearDilClient.getAllCustomers();
+    res.status(200).json(customers);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.delete("/customers/:customerId", async (req, res) => {
+  try {
+    let data = await clearDilClient.deleteCustomer(req.params.customerId);
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.put("/customers/:customerId", async (req, res) => {
+  try {
+    let customerData = req.body.customerData;
+    let data = await clearDilClient.updateCustomer(
+      req.params.customerId,
+      customerData
+    );
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.patch("/customers/:customerId", async (req, res) => {
+  try {
+    //   let customerPatchData = [
+    //     {
+    //         "op": "replace",
+    //         "path": "/first_name",
+    //         "value": "Eric"
+    //     },
+    // ]
+    let customerPatchData = req.body.customerPatchData;
+    let data = await clearDilClient.partiallyUpdateCustomer(
+      req.params.customerId,
+      customerPatchData
+    );
+    res.status(200).json(data);
+  } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
 });

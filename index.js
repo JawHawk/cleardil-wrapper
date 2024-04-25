@@ -1,4 +1,11 @@
-const { createCustomer, getCustomer } = require("./resources/customers");
+const {
+  createCustomer,
+  getCustomer,
+  updateCustomer,
+  getAllCustomers,
+  deleteCustomer,
+  partiallyUpdateCustomer,
+} = require("./resources/customers");
 
 class ClearDil {
   constructor(clientId, clientSecret) {
@@ -50,6 +57,7 @@ class ClearDil {
     return fn.apply(this, [this.baseURL, this.tokenData.access_token, ...args]);
   }
 
+  // Customers resource
   async createCustomer(customerData) {
     return this.withAccessToken(createCustomer, customerData);
   }
@@ -57,6 +65,28 @@ class ClearDil {
   async getCustomer(customerId) {
     return this.withAccessToken(getCustomer, customerId);
   }
+
+  async updateCustomer(customerId, customerData) {
+    return this.withAccessToken(updateCustomer, customerId, customerData);
+  }
+
+  async partiallyUpdateCustomer(customerId, customerPatchData) {
+    return this.withAccessToken(
+      partiallyUpdateCustomer,
+      customerId,
+      customerPatchData
+    );
+  }
+
+  async deleteCustomer(customerId) {
+    return this.withAccessToken(deleteCustomer, customerId);
+  }
+
+  async getAllCustomers() {
+    return this.withAccessToken(getAllCustomers);
+  }
+
+  // Other resources.
 }
 
 module.exports = ClearDil;

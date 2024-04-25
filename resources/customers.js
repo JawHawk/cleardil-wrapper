@@ -1,33 +1,71 @@
+const {
+  postAPICall,
+  getAPICall,
+  putAPICall,
+  deleteAPICall,
+  patchAPICall,
+} = require("../utils/requests");
+
+// All functions for customers resource
+
 async function createCustomer(baseURL, accessToken, customerData) {
-  const response = await fetch(new URL("customers", baseURL), {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(customerData),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Failed to create customer: ${response.statusText}`);
-  }
-
-  return await response.json();
+  const data = await postAPICall(
+    new URL("customers", baseURL),
+    accessToken,
+    customerData
+  );
+  return data;
 }
 
 async function getCustomer(baseURL, accessToken, customerId) {
-  const response = await fetch(new URL(`customers/${customerId}`, baseURL), {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`Failed to get customer: ${response.statusText}`);
-  }
-
-  return await response.json();
+  const data = await getAPICall(
+    new URL(`customers/${customerId}`, baseURL),
+    accessToken
+  );
+  return data;
 }
 
-module.exports = { createCustomer, getCustomer };
+async function updateCustomer(baseURL, accessToken, customerId, customerData) {
+  const data = await putAPICall(
+    new URL(`customers/${customerId}`, baseURL),
+    accessToken,
+    customerData
+  );
+  return data;
+}
+
+async function partiallyUpdateCustomer(
+  baseURL,
+  accessToken,
+  customerId,
+  customerPatchData
+) {
+  const data = await patchAPICall(
+    new URL(`customers/${customerId}`, baseURL),
+    accessToken,
+    customerPatchData
+  );
+  return data;
+}
+
+async function deleteCustomer(baseURL, accessToken, customerId) {
+  const data = await deleteAPICall(
+    new URL(`customers/${customerId}`, baseURL),
+    accessToken
+  );
+  return data;
+}
+
+async function getAllCustomers(baseURL, accessToken) {
+  const data = await getAPICall(new URL("customers", baseURL), accessToken);
+  return data;
+}
+
+module.exports = {
+  createCustomer,
+  getCustomer,
+  updateCustomer,
+  partiallyUpdateCustomer,
+  deleteCustomer,
+  getAllCustomers,
+};
