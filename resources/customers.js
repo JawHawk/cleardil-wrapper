@@ -1,71 +1,50 @@
-const {
-  postAPICall,
-  getAPICall,
-  putAPICall,
-  deleteAPICall,
-  patchAPICall,
-} = require("../utils/requests");
+const APIUtil = require("../utils/requests");
 
-// All functions for customers resource
+// Customer resource class
+class CustomerResource extends APIUtil {
+  constructor(baseURL) {
+    super(baseURL);
+  }
+  async createCustomer(accessToken, customerData) {
+    const data = await this.postAPICall("customers", accessToken, customerData);
+    return data;
+  }
 
-async function createCustomer(baseURL, accessToken, customerData) {
-  const data = await postAPICall(
-    new URL("customers", baseURL),
-    accessToken,
-    customerData
-  );
-  return data;
+  async getCustomer(accessToken, customerId) {
+    const data = await this.getAPICall(`customers/${customerId}`, accessToken);
+    return data;
+  }
+
+  async updateCustomer(accessToken, customerId, customerData) {
+    const data = await this.putAPICall(
+      `customers/${customerId}`,
+      accessToken,
+      customerData
+    );
+    return data;
+  }
+
+  async partiallyUpdateCustomer(accessToken, customerId, customerPatchData) {
+    const data = await this.patchAPICall(
+      `customers/${customerId}`,
+      accessToken,
+      customerPatchData
+    );
+    return data;
+  }
+
+  async deleteCustomer(accessToken, customerId) {
+    const data = await this.deleteAPICall(
+      `customers/${customerId}`,
+      accessToken
+    );
+    return data;
+  }
+
+  async getAllCustomers(accessToken) {
+    const data = await this.getAPICall("customers", accessToken);
+    return data;
+  }
 }
 
-async function getCustomer(baseURL, accessToken, customerId) {
-  const data = await getAPICall(
-    new URL(`customers/${customerId}`, baseURL),
-    accessToken
-  );
-  return data;
-}
-
-async function updateCustomer(baseURL, accessToken, customerId, customerData) {
-  const data = await putAPICall(
-    new URL(`customers/${customerId}`, baseURL),
-    accessToken,
-    customerData
-  );
-  return data;
-}
-
-async function partiallyUpdateCustomer(
-  baseURL,
-  accessToken,
-  customerId,
-  customerPatchData
-) {
-  const data = await patchAPICall(
-    new URL(`customers/${customerId}`, baseURL),
-    accessToken,
-    customerPatchData
-  );
-  return data;
-}
-
-async function deleteCustomer(baseURL, accessToken, customerId) {
-  const data = await deleteAPICall(
-    new URL(`customers/${customerId}`, baseURL),
-    accessToken
-  );
-  return data;
-}
-
-async function getAllCustomers(baseURL, accessToken) {
-  const data = await getAPICall(new URL("customers", baseURL), accessToken);
-  return data;
-}
-
-module.exports = {
-  createCustomer,
-  getCustomer,
-  updateCustomer,
-  partiallyUpdateCustomer,
-  deleteCustomer,
-  getAllCustomers,
-};
+module.exports = CustomerResource;
