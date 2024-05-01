@@ -118,6 +118,17 @@ app.patch("/customers/:customerId", async (req, res) => {
   }
 });
 
+app.get("/riskprofile/:customerId", async (req, res) => {
+  try {
+    let riskProfileData = await clearDilClient.riskProfile.getRiskProfile(
+      req.params.customerId
+    );
+    res.status(200).json(riskProfileData);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
