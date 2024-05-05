@@ -1,7 +1,9 @@
 const AssociationResource = require("./resources/Associations");
 const CustomerResource = require("./resources/Customers");
 const DocumentVerificationResource = require("./resources/DocumentVerifications");
+const FileResource = require("./resources/Files");
 const MatchResource = require("./resources/Matches");
+const ReportResource = require("./resources/Reports");
 const RiskProfileResource = require("./resources/Riskprofile");
 const ScreeningResource = require("./resources/Screenings");
 
@@ -12,6 +14,8 @@ class ClearDil {
   #matchResource;
   #associationResource;
   #documentVerificationResource;
+  #reportResource;
+  #fileResource;
   constructor(clientId, clientSecret) {
     if (!clientId || !clientSecret) {
       throw new Error("Client id and secret cannot be null");
@@ -29,6 +33,8 @@ class ClearDil {
     this.#documentVerificationResource = new DocumentVerificationResource(
       this.baseURL
     );
+    this.#reportResource = new ReportResource(this.baseURL);
+    this.#fileResource = new FileResource(this.baseURL);
   }
 
   async #generateAccessToken() {
@@ -253,6 +259,70 @@ class ClearDil {
         this.#documentVerificationResource.searchAllDocumentVerifications,
         this.#documentVerificationResource
       ),
+  };
+
+  // Reports resource
+  reports = {
+    getReport: (reportId) =>
+      this.withAccessToken(
+        this.#reportResource.getReport,
+        this.#reportResource,
+        reportId
+      ),
+    downloadReport: (reportId, extension) =>
+      this.withAccessToken(
+        this.#reportResource.downloadReport,
+        this.#reportResource,
+        reportId,
+        extension
+      ),
+    listAllReports: () =>
+      this.withAccessToken(
+        this.#reportResource.listAllReports,
+        this.#reportResource
+      ),
+  };
+
+  // Files resource
+  files = {
+    getFile: (fileId) =>
+      this.withAccessToken(
+        this.#fileResource.getFile,
+        this.#fileResource,
+        fileId
+      ),
+    downloadFile: (fileId, output) =>
+      this.withAccessToken(
+        this.#fileResource.downloadFile,
+        this.#fileResource,
+        fileId,
+        output
+      ),
+    updateFile: (fileId, fileName, fileSize, contentType, content) =>
+      this.withAccessToken(
+        this.#fileResource.updateFile,
+        this.#fileResource,
+        fileId,
+        fileName,
+        fileSize,
+        contentType,
+        content
+      ),
+    partiallyUpdateFile: (fileId, filePatchData) =>
+      this.withAccessToken(
+        this.#fileResource.partiallyUpdateFile,
+        this.#fileResource,
+        fileId,
+        filePatchData
+      ),
+    deleteFile: (fileId) =>
+      this.withAccessToken(
+        this.#fileResource.deleteFile,
+        this.#fileResource,
+        fileId
+      ),
+    listAllFiles: () =>
+      this.withAccessToken(this.#fileResource.listAllFiles, this.#fileResource),
   };
   // Other resources.
 }
