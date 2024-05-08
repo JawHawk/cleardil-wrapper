@@ -74,17 +74,40 @@ class ClearDil {
     };
   }
 
-  async #ensureAccessToken() {
-    // Check if access token exists or is it expired.
-    if (
-      !this.tokenData.access_token ||
-      Date.now() >= this.tokenData.tokenExpiresAt
-    ) {
-      // refresh token logic will come here. This is just for showcasing the logic.
-      // refreshAccessToken method will be created later on and called here.
-      // await this.refreshAccessToken() will be used instead of this.generateAccessToken();
+  async #refreshAccessToken() {
+    const body = new URLSearchParams({
+      grant_type: "refresh_token",
+      refresh_token: this.tokenData.refresh_token,
+    }).toString();
 
+    const response = await fetch(new URL("oauth2/token", this.baseURL).href, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: `Basic ${btoa(this.clientId + ":" + this.clientSecret)}`,
+      },
+      body: body,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to refresh access token: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    this.tokenData = {
+      ...data,
+      tokenExpiresAt: Date.now() + data.expires_in * 1000,
+    };
+  }
+
+  async #ensureAccessToken() {
+    // Check if access token exists or it is expired.
+    if (!this.tokenData.access_token) {
       await this.#generateAccessToken();
+    } else {
+      if (Date.now() >= this.tokenData.tokenExpiresAt) {
+        await this.#refreshAccessToken();
+      }
     }
   }
 
