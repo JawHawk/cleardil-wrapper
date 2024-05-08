@@ -1,8 +1,12 @@
 const AssociationResource = require("./resources/Associations");
 const CustomerResource = require("./resources/Customers");
 const DocumentVerificationResource = require("./resources/DocumentVerifications");
+const DocumentResource = require("./resources/Documents");
 const FileResource = require("./resources/Files");
+const IdentityVerificationResource = require("./resources/IdentityVerifications");
 const MatchResource = require("./resources/Matches");
+const NoteResource = require("./resources/Notes");
+const ODDResource = require("./resources/OngoingDueDiligence");
 const ReportResource = require("./resources/Reports");
 const RiskProfileResource = require("./resources/Riskprofile");
 const ScreeningResource = require("./resources/Screenings");
@@ -16,6 +20,10 @@ class ClearDil {
   #documentVerificationResource;
   #reportResource;
   #fileResource;
+  #noteResource;
+  #oddResource;
+  #documentResource;
+  #identityVerificationResource;
   constructor(clientId, clientSecret) {
     if (!clientId || !clientSecret) {
       throw new Error("Client id and secret cannot be null");
@@ -35,6 +43,12 @@ class ClearDil {
     );
     this.#reportResource = new ReportResource(this.baseURL);
     this.#fileResource = new FileResource(this.baseURL);
+    this.#noteResource = new NoteResource(this.baseURL);
+    this.#oddResource = new ODDResource(this.baseURL);
+    this.#documentResource = new DocumentResource(this.baseURL);
+    this.#identityVerificationResource = new IdentityVerificationResource(
+      this.baseURL
+    );
   }
 
   async #generateAccessToken() {
@@ -324,7 +338,183 @@ class ClearDil {
     listAllFiles: () =>
       this.withAccessToken(this.#fileResource.listAllFiles, this.#fileResource),
   };
-  // Other resources.
+
+  //Notes resource
+  notes = {
+    getNote: (customerId, noteId) =>
+      this.withAccessToken(
+        this.#noteResource.getNote,
+        this.#noteResource,
+        customerId,
+        noteId
+      ),
+    createNote: (customerId, text) =>
+      this.withAccessToken(
+        this.#noteResource.createNote,
+        this.#noteResource,
+        customerId,
+        text
+      ),
+    updateNote: (customerId, noteId, text) =>
+      this.withAccessToken(
+        this.#noteResource.updateNote,
+        this.#noteResource,
+        customerId,
+        noteId,
+        text
+      ),
+    deleteNote: (customerId, noteId) =>
+      this.withAccessToken(
+        this.#noteResource.deleteNote,
+        this.#noteResource,
+        customerId,
+        noteId
+      ),
+    listAllNotes: (customerId) =>
+      this.withAccessToken(
+        this.#noteResource.listAllNotes,
+        this.#noteResource,
+        customerId
+      ),
+  };
+
+  // ODD resource
+  odd = {
+    getODD: (customerId, oddId) =>
+      this.withAccessToken(
+        this.#oddResource.getODD,
+        this.#oddResource,
+        customerId,
+        oddId
+      ),
+    createODD: (customerId, scope, frequency, active = null) =>
+      this.withAccessToken(
+        this.#oddResource.createODD,
+        this.#oddResource,
+        customerId,
+        scope,
+        frequency,
+        active
+      ),
+    getODDResult: (customerId, oddId) =>
+      this.withAccessToken(
+        this.#oddResource.getODDResult,
+        this.#oddResource,
+        customerId,
+        oddId
+      ),
+    updateODD: (customerId, oddId, scope, frequency, active) =>
+      this.withAccessToken(
+        this.#oddResource.updateODD,
+        this.#oddResource,
+        customerId,
+        oddId,
+        scope,
+        frequency,
+        active
+      ),
+    partiallyUpdateODD: (customerId, oddId, scope, frequency, active) =>
+      this.withAccessToken(
+        this.#oddResource.partiallyUpdateODD,
+        this.#oddResource,
+        customerId,
+        oddId,
+        scope,
+        frequency,
+        active
+      ),
+    deleteODD: (customerId, oddId) =>
+      this.withAccessToken(
+        this.#oddResource.deleteODD,
+        this.#oddResource,
+        customerId,
+        oddId
+      ),
+    listAllODD: (customerId) =>
+      this.withAccessToken(
+        this.#oddResource.listAllODD,
+        this.#oddResource,
+        customerId
+      ),
+  };
+
+  //Documents resource
+  documents = {
+    getDocument: (customerId, documentId) =>
+      this.withAccessToken(
+        this.#documentResource.getDocument,
+        this.#documentResource,
+        customerId,
+        documentId
+      ),
+    createDocument: (customerId, documentDataObject) =>
+      this.withAccessToken(
+        this.#documentResource.createDocument,
+        this.#documentResource,
+        customerId,
+        documentDataObject
+      ),
+    downloadDocument: (customerId, documentId, side = null) =>
+      this.withAccessToken(
+        this.#documentResource.downloadDocument,
+        this.#documentResource,
+        customerId,
+        documentId,
+        side
+      ),
+    updateDocument: (customerId, documentId, documentDataObject) =>
+      this.withAccessToken(
+        this.#documentResource.updateDocument,
+        this.#documentResource,
+        customerId,
+        documentId,
+        documentDataObject
+      ),
+    partiallyUpdateDocument: (customerId, documentId, patchDocumentData) =>
+      this.withAccessToken(
+        this.#documentResource.partiallyUpdateDocument,
+        this.#documentResource,
+        customerId,
+        documentId,
+        patchDocumentData
+      ),
+    listAllDocuments: (customerId) =>
+      this.withAccessToken(
+        this.#documentResource.listAllDocuments,
+        this.#documentResource,
+        customerId
+      ),
+  };
+
+  // Identity Verifications resource
+  identityVerifications = {
+    getIdentityVerification: (customerId, identificationId) =>
+      this.withAccessToken(
+        this.#identityVerificationResource.getIdentityVerification,
+        this.#identityVerificationResource,
+        customerId,
+        identificationId
+      ),
+    createIdentityVerification: (customerId, documentId, selfieImage) =>
+      this.withAccessToken(
+        this.#identityVerificationResource.createIdentityVerification,
+        this.#identityVerificationResource,
+        customerId,
+        documentId,
+        selfieImage
+      ),
+    listAllIdentityVerifications: (customerId) =>
+      this.withAccessToken(
+        this.#identityVerificationResource.listAllIdentityVerifications,
+        this.#identityVerificationResource,
+        customerId
+      ),
+    searchAllIdentityVerifications: () =>
+      this.withAccessToken(
+        this.#identityVerificationResource.searchAllIdentityVerifications,
+        this.#identityVerificationResource
+      ),
+  };
 }
 
 module.exports = ClearDil;
