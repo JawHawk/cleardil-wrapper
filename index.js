@@ -117,7 +117,7 @@ class ClearDil {
   }
 
   // Customers resource
-  customer = {
+  customers = {
     createCustomer: (customerData) =>
       this.withAccessToken(
         this.#customerResource.createCustomer,
@@ -189,7 +189,7 @@ class ClearDil {
         this.#screeningResource,
         customerId
       ),
-    searchAllScreeningsL: () =>
+    searchAllScreenings: () =>
       this.withAccessToken(
         this.#screeningResource.searchAllScreenings,
         this.#screeningResource

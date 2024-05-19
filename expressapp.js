@@ -2,13 +2,15 @@
 const express = require("express");
 const ClearDil = require(".");
 
+require("dotenv").config();
+
 const app = express();
 const PORT = 3000;
 app.use(express.json());
 
 // Enter respective clientId and secret
-const clientId = "";
-const clientSecret = "";
+const clientId = process.env.CLEARDIL_CLIENTID;
+const clientSecret = process.env.CLEARDIL_CLIENTSECRET;
 
 const clearDilClient = new ClearDil(clientId, clientSecret);
 
@@ -41,7 +43,7 @@ app.post("/createcustomer", async (req, res) => {
     // }
 
     let customerData = req.body.customerData;
-    let newCustomer = await clearDilClient.customer.createCustomer(
+    let newCustomer = await clearDilClient.customers.createCustomer(
       customerData
     );
     res.status(200).json(newCustomer);
@@ -52,7 +54,7 @@ app.post("/createcustomer", async (req, res) => {
 
 app.get("/customers/:customerId", async (req, res) => {
   try {
-    let customerData = await clearDilClient.customer.getCustomer(
+    let customerData = await clearDilClient.customers.getCustomer(
       req.params.customerId
     );
     res.status(200).json(customerData);
@@ -63,7 +65,7 @@ app.get("/customers/:customerId", async (req, res) => {
 
 app.get("/customers", async (req, res) => {
   try {
-    let customers = await clearDilClient.customer.getAllCustomers();
+    let customers = await clearDilClient.customers.getAllCustomers();
     res.status(200).json(customers);
   } catch (error) {
     console.log(error);
@@ -73,7 +75,7 @@ app.get("/customers", async (req, res) => {
 
 app.delete("/customers/:customerId", async (req, res) => {
   try {
-    let data = await clearDilClient.customer.deleteCustomer(
+    let data = await clearDilClient.customers.deleteCustomer(
       req.params.customerId
     );
     res.status(200).json(data);
@@ -86,7 +88,7 @@ app.delete("/customers/:customerId", async (req, res) => {
 app.put("/customers/:customerId", async (req, res) => {
   try {
     let customerData = req.body.customerData;
-    let data = await clearDilClient.customer.updateCustomer(
+    let data = await clearDilClient.customers.updateCustomer(
       req.params.customerId,
       customerData
     );
@@ -107,7 +109,7 @@ app.patch("/customers/:customerId", async (req, res) => {
     //     },
     // ]
     let customerPatchData = req.body.customerPatchData;
-    let data = await clearDilClient.customer.partiallyUpdateCustomer(
+    let data = await clearDilClient.customers.partiallyUpdateCustomer(
       req.params.customerId,
       customerPatchData
     );
